@@ -106,13 +106,36 @@ function appendPre(message) {
     }
 }
 
+function write_data(cell) {
+    var values = [
+        get_followers(),
+    ];
+
+    var body = {
+        values: values
+    };
+
+    gapi.client.sheets.spreadsheets.values.append({
+        spreadsheetId: SHEET_ID,
+        range: 'C18',
+        valueInputOption: 'RAW',
+        resource: body
+    }).then((response) => {
+        var result = response.result;
+        console.log(`${result.updatedCells} cells updated.`);
+    });
+}
+
 function getSheets() {
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: SHEET_ID,
-        range: 'A1:A10'
+        range: 'C:C'
     }).then((response) => {
         var result = response.result;
         var numRows = result.values ? result.values.length : 0;
+
+        write_data()
+
         console.log(`${numRows} rows retrieved.`);
     });
 }
