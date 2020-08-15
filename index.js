@@ -4,7 +4,7 @@ var API_KEY = 'AIzaSyCkK2ur2Ko82YQyJaJBjT0ojgkIt7TjaJ0';
 var SHEET_ID = '1ExEZ42OGvvIXG5SQID21kSlNRyj-E00aqtFGyMEQ45o';
 
 var GoogleAuth;
-var SCOPE = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+var SCOPE = 'https://www.googleapis.com/auth/drive';
 
 function handleClientLoad() {
     // Load the API's client and auth2 modules.
