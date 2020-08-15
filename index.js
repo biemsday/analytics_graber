@@ -2,9 +2,26 @@
 var CLIENT_ID = '980245746698-giol08o9qv8eu0p0t1l95bruq8232foe.apps.googleusercontent.com';
 var API_KEY = 'AIzaSyCkK2ur2Ko82YQyJaJBjT0ojgkIt7TjaJ0';
 var SHEET_ID = '1ExEZ42OGvvIXG5SQID21kSlNRyj-E00aqtFGyMEQ45o';
+var SCOPE = 'https://www.googleapis.com/auth/drive';
 
 var GoogleAuth;
-var SCOPE = 'https://www.googleapis.com/auth/drive';
+
+async function get_followers(window) {
+    'use strict';
+
+    let response = await fetch('https://www.instagram.com/basova.yana/?__a=1');
+    try {
+        if (response.ok) {
+            let json = await response.json();
+            var return_result = json.graphql.user.edge_followed_by.count
+            console.log(return_result)
+        } else {
+            alert('Ошибка HTTP: ' + response.status);
+        }
+    } catch (e) {
+        console.log(e + ' - f() - followers count')
+    }
+}
 
 function handleClientLoad() {
     // Load the API's client and auth2 modules.
