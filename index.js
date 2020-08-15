@@ -2,6 +2,8 @@
 var CLIENT_ID = '980245746698-giol08o9qv8eu0p0t1l95bruq8232foe.apps.googleusercontent.com';
 var API_KEY = 'AIzaSyCkK2ur2Ko82YQyJaJBjT0ojgkIt7TjaJ0';
 
+var SHEET_ID = '1ExEZ42OGvvIXG5SQID21kSlNRyj-E00aqtFGyMEQ45o';
+
 // Array of API discovery doc URLs for APIs used by the quickstart
 var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 
@@ -33,68 +35,84 @@ var signoutButton = document.getElementById('signout_button');
 
 // onload init gapi
 function handleClientLoad() {
-    gapi.load('client:auth2', initClient);
+    try {
+        gapi.load('client:auth2', initClient);
+    } catch (e) {
+
+    }
+
 }
 
 // init statment
 function initClient() {
-    gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-    }).then(function() {
-        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        authorizeButton.onclick = handleAuthClick;
-        signoutButton.onclick = handleSignoutClick;
-    }, function(error) {
-        appendPre(JSON.stringify(error, null, 2));
-    });
+    try {
+        gapi.client.init({
+            apiKey: API_KEY,
+            clientId: CLIENT_ID,
+            discoveryDocs: DISCOVERY_DOCS,
+            scope: SCOPES
+        }).then(function() {
+            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            authorizeButton.onclick = handleAuthClick;
+            signoutButton.onclick = handleSignoutClick;
+        }, function(error) {
+            appendPre(JSON.stringify(error, null, 2));
+        });
+    } catch (e) {
+
+    }
+
 }
 
 function updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-        authorizeButton.style.display = 'none';
-        signoutButton.style.display = 'block';
-        listMajors();
-    } else {
-        authorizeButton.style.display = 'block';
-        signoutButton.style.display = 'none';
+    try {
+        if (isSignedIn) {
+            authorizeButton.style.display = 'none';
+            signoutButton.style.display = 'block';
+            listMajors();
+        } else {
+            authorizeButton.style.display = 'block';
+            signoutButton.style.display = 'none';
+        }
+    } catch (e) {
+
     }
 }
 
 function handleAuthClick(event) {
-    gapi.auth2.getAuthInstance().signIn();
+    try {
+        gapi.auth2.getAuthInstance().signIn();
+    } catch (e) {
+
+    }
 }
 
 function handleSignoutClick(event) {
-    gapi.auth2.getAuthInstance().signOut();
+    try {
+        gapi.auth2.getAuthInstance().signOut();
+    } catch (e) {
+
+    }
 }
 
 function appendPre(message) {
-    var pre = document.getElementById('content');
-    var textContent = document.createTextNode(message + '\n');
-    pre.appendChild(textContent);
+    try {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+    } catch (e) {
+
+    }
 }
-//custom event gss
-function listMajors() {
+
+function getSheets() {
     gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: '1ExEZ42OGvvIXG5SQID21kSlNRyj-E00aqtFGyMEQ45o',
-        range: 'План Data!A2:A10',
-    }).then(function(response) {
-        var range = response.result;
-        if (range.values.length > 0) {
-            appendPre('Name, Major:');
-            for (i = 0; i < range.values.length; i++) {
-                var row = range.values[i];
-                // Print columns A and E, which correspond to indices 0 and 4.
-                appendPre(row[0] + ', ' + row[4]);
-            }
-        } else {
-            appendPre('No data found.');
-        }
-    }, function(response) {
-        appendPre('Error: ' + response.result.error.message);
+        spreadsheetId: SHEET_ID,
+        range: 'A1:A10'
+    }).then((response) => {
+        var result = response.result;
+        var numRows = result.values ? result.values.length : 0;
+        console.log(`${numRows} rows retrieved.`);
     });
 }
